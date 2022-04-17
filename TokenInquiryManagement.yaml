@@ -1,0 +1,190 @@
+swagger: '2.0'
+info:
+  contact:
+    name: igualte@bancodebogota.com
+  title: TokenInquiryManagement
+  version: '2.0'
+  description: >-
+    Servicio que provee el manejo de Token del Cliente Persona Natural sobre los
+    canales transaccionales de canales electrónicos.
+schemes:
+  - http
+host: 10.86.154.122:3088
+basePath: /customer/product/service/TokenInquiryManagementV2
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: getTokenInfo
+paths:
+  /getTokenInfo:
+    post:
+      x-swagger-router-controller: issuerGatewayDispatcher
+      summary: Permite obtener la información actual del Token de un Cliente.
+      description: Permite obtener la información actual del Token de un Cliente..
+      operationId: getTokenInfo
+      produces:
+        - application/json
+      parameters:
+        - description: UUID generado
+          in: header
+          maxLength: 39
+          minLength: 1
+          name: x-RqUID
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: getTokenInfo request payload
+          required: true
+          schema:
+            type: object
+            properties:
+              TokenInfoInqRq:
+                $ref: '#/definitions/TokenInfoInqRq'
+      responses:
+        '200':
+          description: getTokenInfo response payload
+          schema:
+            type: object
+            properties:
+              TokenInfoInqRs:
+                $ref: '#/definitions/TokenInfoInqRs'
+        '400':
+          description: >-
+            Bad Request, Invalid request URI or header, or unsupported
+            nonstandard parameter
+          schema:
+            type: object
+            description: Error Information Response
+            required:
+              - responseCode
+            properties:
+              responseCode:
+                type: number
+                description: |
+                  Error Response code to the request
+              errorMessage:
+                type: string
+                maxLength: 256
+                description: Textual error message
+        '500':
+          description: Internal Server Error
+definitions:
+  CustId:
+    type: object
+    description: Inforamacion del Cliente
+    properties:
+      SPName:
+        type: string
+        maxLength: 36
+        description: Tipo de Identificación del Cliente
+      CustPermId:
+        type: string
+        maxLength: 32
+        description: Número de Identificación del Cliente
+  NetworkTrnInfo:
+    type: object
+    properties:
+      NetworkOwner:
+        type: string
+        maxLength: 80
+        description: Identificación del Canal
+      TerminalId:
+        type: string
+        maxLength: 36
+        description: Numero de Terminal
+      BankId:
+        type: string
+        maxLength: 34
+        description: Codigo Banco Origen
+  Status:
+    type: object
+    properties:
+      StatusCode:
+        type: string
+        maxLength: 20
+        description: Código de estado de la transacción.
+      ServerStatusCode:
+        type: string
+        maxLength: 20
+        description: Código de estado del servidor
+      Severity:
+        type: string
+        maxLength: 10
+        description: Severidad de la transacción
+      StatusDesc:
+        type: string
+        maxLength: 2048
+        description: Descripción de estado de la transacción.
+      ServerStatusDesc:
+        type: string
+        maxLength: 2048
+        description: Descripción de estado del servidor
+  ProductInfo:
+    type: object
+    properties:
+      ProductId:
+        type: string
+        maxLength: 36
+        description: Serial del Token
+      ProductNum:
+        type: string
+        maxLength: 36
+        description: Modelo del Token
+      StatusCode:
+        type: string
+        maxLength: 20
+        description: Estado del Token
+  PhoneNum:
+    type: object
+    properties:
+      Phone:
+        type: string
+        maxLength: 30
+        description: Número de teléfono
+  ContactInfo:
+    type: object
+    properties:
+      PhoneNum:
+        $ref: '#/definitions/PhoneNum'
+      EmailAddr:
+        type: string
+        maxLength: 80
+        description: Dirección de correo electrónico
+  TokenInfoInqRq:
+    type: object
+    properties:
+      CustId:
+        $ref: '#/definitions/CustId'
+      NetworkTrnInfo:
+        $ref: '#/definitions/NetworkTrnInfo'
+      SafePhone:
+        $ref: '#/definitions/SafePhone'
+  SafePhone:
+    type: string
+    maxLength: 1
+    description: Define si el número de teléfono se desea consultar del Dato Seguro
+  TokenInfoInqRs:
+    type: object
+    properties:
+      Status:
+        $ref: '#/definitions/Status'
+      NetworkTrnInfo:
+        $ref: '#/definitions/NetworkTrnInfo'
+      MaxRec:
+        type: integer
+        description: Cantidad de registros de Token en array Product
+      NumRec:
+        type: integer
+        description: Cantidad de Token que están o estuvieron en estado Activo
+      ProductInfo:
+        $ref: '#/definitions/ProductInfo'
+      ContactInfo:
+        $ref: '#/definitions/ContactInfo'
+      SafePhone:
+        $ref: '#/definitions/SafePhone'
+x-stoplight:
+  docs:
+    includeDownloadLink: true
