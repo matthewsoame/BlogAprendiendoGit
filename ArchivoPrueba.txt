@@ -1,6 +1,27 @@
 package com.company;
 
-
+import com.company.behavioral.chainofresponsibility.Tarjeta;
+import com.company.behavioral.command.CreditCard;
+import com.company.behavioral.command.CreditCardActivateCommand;
+import com.company.behavioral.command.CreditCardDesactivateCommand;
+import com.company.behavioral.command.CreditCardInvoker;
+import com.company.behavioral.state.MobileAlertStateContext;
+import com.company.behavioral.state.Silent;
+import com.company.behavioral.state.Vibration;
+import com.company.behavioral.strategy.CapitalStrategyTextFormatter;
+import com.company.behavioral.strategy.Context;
+import com.company.behavioral.strategy.LowerStrategyTestFormatter;
+import com.company.creational.abstractfactory.AbstractFactory;
+import com.company.creational.abstractfactory.Card;
+import com.company.creational.abstractfactory.FactoryProvider;
+import com.company.creational.abstractfactory.PaymentMethod;
+import com.company.creational.abstractfactory.Tipo;
+import com.company.creational.factorymethod.Payment;
+import com.company.creational.factorymethod.PaymentFactory;
+import com.company.creational.factorymethod.TypePayment;
+import com.company.structural.bridge.ClassicCreditCard;
+import com.company.structural.bridge.SecureCreditCard;
+import com.company.structural.bridge.UnsecureCreditCard;
 
 
 public class Main {
