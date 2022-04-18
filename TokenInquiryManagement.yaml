@@ -4,33 +4,60 @@ info:
     name: igualte@bancodebogota.com
   title: TokenInquiryManagement
   version: '2.0'
-  description: >-
-    Servicio que provee el manejo de Token del Cliente Persona Natural sobre los
-    canales transaccionales de canales electrónicos.
+  description: 'Servicio que provee el manejo de Token del Cliente Persona Natural sobre los canales transaccionales de canales electrónicos.'
 schemes:
   - http
-host: 10.86.154.122:3088
-basePath: /customer/product/service/TokenInquiryManagementV2
 consumes:
   - application/json
 produces:
   - application/json
+host: 10.86.154.122:3088
+basePath: /customer/product/service/TokenInquiryManagement
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
 tags:
   - name: getTokenInfo
+x-amazon-apigateway-request-validators:
+  Validate body, query string parameters, and headers:
+    validateRequestParameters: true
+    validateRequestBody: true
 paths:
   /getTokenInfo:
     post:
-      x-swagger-router-controller: issuerGatewayDispatcher
       summary: Permite obtener la información actual del Token de un Cliente.
-      description: Permite obtener la información actual del Token de un Cliente..
+      description: >-
+        Permite obtener la información actual del Token de un Cliente.
       operationId: getTokenInfo
+      consumes:
+        - application/json
       produces:
         - application/json
+      security:
+        - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body, query string parameters, and headers"
+      x-amazon-apigateway-integration:
+        type: "http"
+        connectionId: "${stageVariables.vpcLink}"
+        httpMethod: "POST"
+        uri: "http://${stageVariables.endpoint_service}:80/customer/product/service/TokenInquiryManagement/getTokenInfo"
+        responses:
+          default:
+            statusCode: "200"
+          "4\\d{2}":
+            statusCode: "400"
+          "5\\d{2}":
+            statusCode: "500"
+        requestParameters:
+          integration.request.header.x-RqUID: "method.request.header.x-RqUID"
+        passthroughBehavior: "when_no_match"
+        connectionType: "VPC_LINK"
       parameters:
         - description: UUID generado
           in: header
           maxLength: 39
-          minLength: 1
           name: x-RqUID
           required: true
           type: string
@@ -42,7 +69,7 @@ paths:
             type: object
             properties:
               TokenInfoInqRq:
-                $ref: '#/definitions/TokenInfoInqRq'
+                $ref: "#/definitions/TokenInfoInqRq"
       responses:
         '200':
           description: getTokenInfo response payload
@@ -50,7 +77,7 @@ paths:
             type: object
             properties:
               TokenInfoInqRs:
-                $ref: '#/definitions/TokenInfoInqRs'
+                $ref: "#/definitions/TokenInfoInqRs"
         '400':
           description: >-
             Bad Request, Invalid request URI or header, or unsupported
@@ -110,7 +137,7 @@ definitions:
         type: string
         maxLength: 20
         description: Código de estado del servidor
-      Severity:
+      Severity: 
         type: string
         maxLength: 10
         description: Severidad de la transacción
@@ -121,8 +148,8 @@ definitions:
       ServerStatusDesc:
         type: string
         maxLength: 2048
-        description: Descripción de estado del servidor
-  ProductInfo:
+        description: Descripción de estado del servidor 
+  ProductInfo: 
     type: object
     properties:
       ProductId:
@@ -148,7 +175,7 @@ definitions:
     type: object
     properties:
       PhoneNum:
-        $ref: '#/definitions/PhoneNum'
+        $ref: "#/definitions/PhoneNum"
       EmailAddr:
         type: string
         maxLength: 80
@@ -157,11 +184,11 @@ definitions:
     type: object
     properties:
       CustId:
-        $ref: '#/definitions/CustId'
+        $ref: "#/definitions/CustId"
       NetworkTrnInfo:
-        $ref: '#/definitions/NetworkTrnInfo'
+        $ref: "#/definitions/NetworkTrnInfo"
       SafePhone:
-        $ref: '#/definitions/SafePhone'
+        $ref: "#/definitions/SafePhone"
   SafePhone:
     type: string
     maxLength: 1
@@ -170,9 +197,9 @@ definitions:
     type: object
     properties:
       Status:
-        $ref: '#/definitions/Status'
+        $ref: "#/definitions/Status"
       NetworkTrnInfo:
-        $ref: '#/definitions/NetworkTrnInfo'
+        $ref: "#/definitions/NetworkTrnInfo"
       MaxRec:
         type: integer
         description: Cantidad de registros de Token en array Product
@@ -180,11 +207,11 @@ definitions:
         type: integer
         description: Cantidad de Token que están o estuvieron en estado Activo
       ProductInfo:
-        $ref: '#/definitions/ProductInfo'
+        $ref: "#/definitions/ProductInfo"
       ContactInfo:
-        $ref: '#/definitions/ContactInfo'
+        $ref: "#/definitions/ContactInfo"
       SafePhone:
-        $ref: '#/definitions/SafePhone'
+        $ref: "#/definitions/SafePhone"
 x-stoplight:
   docs:
     includeDownloadLink: true
