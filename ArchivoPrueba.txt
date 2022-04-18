@@ -29,7 +29,23 @@ public class Main {
     public static void main(String[] args) {
 
       
+ //CREACIONALES
+	    //probarFactoryMethod();
+        probarAbstractFactory();
+        //probarBuilder();
+       // probarSinglenton();
 
+
+        //COMPORTAMIENTO
+        probarChainOfResponsability();
+       // probarCommand();
+       // probarState();
+      // probarStrategy();
+
+
+        //STRUCTURAL
+       // probarAdapter();
+        //probarBridge();
 
 
     }
