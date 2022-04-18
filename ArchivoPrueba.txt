@@ -23,15 +23,13 @@ import com.company.structural.bridge.ClassicCreditCard;
 import com.company.structural.bridge.SecureCreditCard;
 import com.company.structural.bridge.UnsecureCreditCard;
 
-
 public class Main {
 
     public static void main(String[] args) {
 
-      
- //CREACIONALES
+        //CREACIONALES
 	    //probarFactoryMethod();
-        probarAbstractFactory();
+       probarAbstractFactory();
         //probarBuilder();
        // probarSinglenton();
 
@@ -43,10 +41,110 @@ public class Main {
       // probarStrategy();
 
 
-
+        //STRUCTURAL
+       // probarAdapter();
+        //probarBridge();
 
     }
 
+
+
+    private static void probarFactoryMethod(){
+        // Indicamos el método de pago seleccionado por el usuario
+        Payment payment = PaymentFactory.buildPayment(TypePayment.PAYPAL);
+        payment.doPayment(); // para ver en consola según el método de pago que haya seleccionado
+    }
+
+
+    private static void probarAbstractFactory(){
+        AbstractFactory abstractFactory = FactoryProvider.getFactory("Card");// elegimos la factoria
+        Card tarjeta = (Card) abstractFactory.create("VISA");// traemos el objeto
+
+        AbstractFactory abstractFactory1 = FactoryProvider.getFactory("PaymentMethod");
+        PaymentMethod paymentMethod = (PaymentMethod) abstractFactory1.create("DEBIT");
+        
+        AbstractFactory abstractFactory2 = FactoryProvider.getFactory("Tipo");
+        Tipo tipo = (Tipo) abstractFactory2.create("VIRTUAL");
+
+        System.out.println("Un tarjeta de tipo: " + tarjeta.getCardType() + " con el metodo de pago: " + paymentMethod.doPayment() + " con el metodo de pago: " + tipo.getTipo());
+    }
+
+    private static void probarBuilder(){
+        // usamos la clase CardBuilder y su respectivo constructor con las entradas que requiere  según lo declaramos
+        com.company.creational.builder.Card card = new com.company.creational.builder.Card.CardBuilder("VISA",
+                "0000 1111 2222 3333")
+                .name("Alberto")
+                .expires(2030)
+                .credit(true)
+                .build(); //siempre llamamos el método build que nos devilverá la nueva tarjeta con la configuración que hemos pasadao
+
+        System.out.println(card);
+
+        com.company.creational.builder.Card card2 = new com.company.creational.builder.Card.CardBuilder("AMEX",
+                "9999 9999 9999 9999")
+                .build();
+
+        System.out.println(card2);
+    }
+
+    private static void probarSinglenton(){// se hace el llamado de Card del paquete Singleton y se usa el metodo get y posteriormente el set
+        com.company.creational.singlenton.Card.getINSTANCE().setCardNumber("1234-1234-1234-1324");
+        System.out.println(com.company.creational.singlenton.Card.getINSTANCE().getCardNumber());
+    }
+
+    private static void probarChainOfResponsability(){
+        Tarjeta tarjeta = new Tarjeta();// se puede usar el factory para crear la tarjeta ( combinación de patrones )
+        // Cantidad que puede indicar el usuario en la app
+        tarjeta.crediCardRequest(20000);
+    }
+    private static void probarCommand(){
+        CreditCard creditCard = new CreditCard(); // será el reciver, llamamos a la clase creditCard con todos sus metodos
+        CreditCard creditCardDeactivate= new CreditCard();// activar la tarjeta
+
+        CreditCardInvoker invoker = new CreditCardInvoker();// se llama al invoker con sus dos metodos
+
+        invoker.setCommand(new CreditCardActivateCommand(creditCard));
+        invoker.run();
+        System.out.println("--------------------");
+        invoker.setCommand(new CreditCardDesactivateCommand(creditCardDeactivate));
+        invoker.run();
+    }
+
+    private static void probarState(){
+        MobileAlertStateContext context = new MobileAlertStateContext(); // el context mantiene un con estado actual
+        context.alert();// ejecutará el modo alert que por default está en modo sonido
+        context.alert();// se ejecuta por segunda vez
+        context.setState(new Vibration()); //  opción para que el usuario lo cambie al estado de vibración
+        context.alert();
+        context.alert();
+        context.setState(new Silent());//  opción para que el usuario lo cambie al estado de vibración
+        context.alert();
+        context.alert();
+    }
+    private static void probarStrategy(){
+        Context context = new Context(new CapitalStrategyTextFormatter());//acá toma el Context del patron de comportamiento
+        context.publishText("Este texto será convertido a MAYUSCULAS a través del algoritmo");// se pasa el Context a mayusculas
+
+        context = new Context(new LowerStrategyTestFormatter());
+        context.publishText("Esto texto SERA CONVERTIDO a MINUSCULAS a través del algortimo");
+    }
+
+    private static void probarAdapter(){
+
+        com.company.structural.adapter.CreditCard creditCard = new com.company.structural.adapter.CreditCard();
+        creditCard.pay("classic");
+        creditCard.pay("gold");
+        creditCard.pay("black");
+        creditCard.pay("silver");
+    }
+
+    private static void probarBridge(){ // se configura sin seguridad el pago
+        com.company.structural.bridge.CreditCard classic = new ClassicCreditCard(new UnsecureCreditCard());
+        classic.realizarPago();
+
+        classic = new ClassicCreditCard(new SecureCreditCard());// se configura de manera segura
+        classic.realizarPago();
+    }
 
 
 
