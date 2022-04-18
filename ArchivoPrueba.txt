@@ -43,9 +43,6 @@ public class Main {
       // probarStrategy();
 
 
-        //STRUCTURAL
-       // probarAdapter();
-        //probarBridge();
 
 
     }
